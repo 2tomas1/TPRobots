@@ -5,30 +5,20 @@ using TPRobots;
 Console.WriteLine("===== TORNEO DE ROBOTS 2.0 =====");
 Console.WriteLine();
 
-// ----- Armado inicial -----
-// La conexión a SQL Server ya está lista en RobotRepository.cs
-// (y el script CrearBaseDeDatos.sql para crear la base en SSMS),
-// pero por ahora la dejamos APAGADA para poder probar todo el
-// simulador por consola sin depender de que la base exista.
-//
-// Cuando tengas la base creada y conectada, cambiá esta única
-// línea a "true" y el programa empieza a persistir todo solo,
-// sin tocar nada más.
-const bool PersistenciaActiva = false;
+
+const bool PersistenciaActiva = true;
 
 RobotRepository? repositorio = PersistenciaActiva ? new RobotRepository() : null;
 
-// GestorDeDuelos es el "sujeto" del Observer. Acá se registran los
-// componentes que reaccionan cuando termina un duelo. El de base
-// de datos solo se suma si la persistencia está activa.
+// GestorDeDuelos es el "sujeto" del Observer. 
 GestorDeDuelos gestorDeDuelos = new GestorDeDuelos();
 ObservadorRanking ranking = new ObservadorRanking();
 gestorDeDuelos.Suscribir(new ObservadorConsola());
 gestorDeDuelos.Suscribir(ranking);
 if (repositorio != null) gestorDeDuelos.Suscribir(new ObservadorBaseDeDatos(repositorio));
 
-// Robots de ejemplo para arrancar. Se crean con la fábrica
-// (Factory Method), no con "new RobotAsalto(...)" como antes.
+// Robotspara arrancar. Se crean con la fábrica
+
 List<Robot> robots = new()
 {
     RobotFactory.Crear(TipoRobot.Asalto, "Titán", 60, 15),
