@@ -35,7 +35,7 @@ namespace TPRobots
             robot.Id = entidad.Id;
         }
 
-        /
+        
         public void Actualizar(Robot robot)
         {
             using var contexto = NuevoContexto();
