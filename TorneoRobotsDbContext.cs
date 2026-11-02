@@ -9,16 +9,22 @@ namespace TPRobots
         public DbSet<RobotEntity> Robots => Set<RobotEntity>();
         public DbSet<ResultadoDueloEntity> ResultadosDuelos => Set<ResultadoDueloEntity>();
 
-        private readonly string _cadenaConexion;
+        private readonly string? _cadenaConexion;
 
         public TorneoRobotsDbContext(string cadenaConexion)
         {
             _cadenaConexion = cadenaConexion;
         }
 
+        // Lo usan los tests para pasarle una base SQLite en memoria.
+        public TorneoRobotsDbContext(DbContextOptions<TorneoRobotsDbContext> opciones) : base(opciones)
+        {
+        }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(_cadenaConexion);
+            if (!optionsBuilder.IsConfigured)
+                optionsBuilder.UseSqlServer(_cadenaConexion!);
         }
     }
 

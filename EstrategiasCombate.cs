@@ -21,8 +21,7 @@ namespace TPRobots
 
         public int CalcularPuntaje(Robot propio, Robot oponente)
         {
-            Random random = new Random();
-            return (propio.NivelHabilidad * 2) + random.Next(0, 16);
+            return (propio.NivelHabilidad * 2) + propio.Generador.Siguiente(0, 16);
         }
     }
 
@@ -34,21 +33,19 @@ namespace TPRobots
 
         public int CalcularPuntaje(Robot propio, Robot oponente)
         {
-            Random random = new Random();
-            return propio.NivelHabilidad + (propio.Energia / 10) + random.Next(0, 11);
+            return (propio.NivelHabilidad * 2) + (propio.Energia / 20) + propio.Generador.Siguiente(0, 11);
         }
     }
 
     // Golpe certero: casi no depende del azar, pega en base al
-    // nivel de habilidad sin importar la energía.
+    // nivel de habilidad sin importar la energía. El +4 es el bonus por precisión.
     public class EstrategiaPrecision : IEstrategiaCombate
     {
         public string Nombre => "Precisión";
 
         public int CalcularPuntaje(Robot propio, Robot oponente)
         {
-            Random random = new Random();
-            return (int)(propio.NivelHabilidad * 1.5) + random.Next(0, 6);
+            return (propio.NivelHabilidad * 2) + 4 + propio.Generador.Siguiente(0, 6);
         }
     }
 }

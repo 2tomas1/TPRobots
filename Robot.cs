@@ -16,6 +16,8 @@ namespace TPRobots
         public IEstrategiaCombate EstrategiaCombate { get; private set; }
         public IEstadoRobot EstadoActual { get; private set; }
 
+        public IGeneradorAleatorio Generador { get; set; } = new GeneradorAleatorio();
+
        
         internal Robot(string nombre, int energia, int nivelHabilidad, TipoRobot tipo)
         {

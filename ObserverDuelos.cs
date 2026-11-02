@@ -95,24 +95,55 @@ namespace TPRobots
 
         public void EjecutarDuelo(Robot robot1, Robot robot2)
         {
-            if (!robot1.PuedePelear)
-            {
-                Console.WriteLine($"{robot1.Nombre} no puede pelear (estado: {robot1.EstadoActual.Nombre}).");
-                return;
-            }
-
-            if (!robot2.PuedePelear)
-            {
-                Console.WriteLine($"{robot2.Nombre} no puede pelear (estado: {robot2.EstadoActual.Nombre}).");
-                return;
-            }
+            if (!AmbosPuedenPelear(robot1, robot2)) return;
 
             Robot ganador = robot1.RealizarDuelo(robot2);
             Robot perdedor = ganador == robot1 ? robot2 : robot1;
 
             Console.WriteLine($"Ganador del duelo: {ganador.Nombre}");
 
-            var resultado = new ResultadoDuelo(ganador, perdedor);
+            Notificar(new ResultadoDuelo(ganador, perdedor));
+        }
+
+        public ResultadoDueloPorRondas? EjecutarDueloPorRondas(Robot robot1, Robot robot2)
+        {
+            if (!AmbosPuedenPelear(robot1, robot2)) return null;
+
+            ResultadoDueloPorRondas resultado = new DueloPorRondas().Jugar(robot1, robot2);
+
+            if (resultado.Ganador == null)
+            {
+                Console.WriteLine($"El duelo por rondas terminó en empate ({resultado.VictoriasRobot1} a {resultado.VictoriasRobot2}).");
+                return resultado;
+            }
+
+            Robot perdedor = resultado.Ganador == robot1 ? robot2 : robot1;
+            Console.WriteLine($"Ganador del duelo por rondas: {resultado.Ganador.Nombre} " +
+                              $"({resultado.VictoriasRobot1} a {resultado.VictoriasRobot2}).");
+
+            Notificar(new ResultadoDuelo(resultado.Ganador, perdedor));
+            return resultado;
+        }
+
+        private bool AmbosPuedenPelear(Robot robot1, Robot robot2)
+        {
+            if (!robot1.PuedePelear)
+            {
+                Console.WriteLine($"{robot1.Nombre} no puede pelear (estado: {robot1.EstadoActual.Nombre}).");
+                return false;
+            }
+
+            if (!robot2.PuedePelear)
+            {
+                Console.WriteLine($"{robot2.Nombre} no puede pelear (estado: {robot2.EstadoActual.Nombre}).");
+                return false;
+            }
+
+            return true;
+        }
+
+        private void Notificar(ResultadoDuelo resultado)
+        {
             foreach (var observador in _observadores)
             {
                 observador.ActualizarResultado(resultado);

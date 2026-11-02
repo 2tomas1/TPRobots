@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace TPRobots
 {
@@ -14,16 +15,26 @@ namespace TPRobots
 
         
         private readonly string _cadenaConexion;
+        private readonly DbContextOptions<TorneoRobotsDbContext>? _opciones;
 
         public RobotRepository(string? cadenaConexion = null)
         {
             _cadenaConexion = cadenaConexion ?? CadenaConexionPorDefecto;
-
-            
         }
 
-        
-        private TorneoRobotsDbContext NuevoContexto() => new TorneoRobotsDbContext(_cadenaConexion);
+        public RobotRepository(DbContextOptions<TorneoRobotsDbContext> opciones)
+        {
+            _cadenaConexion = CadenaConexionPorDefecto;
+            _opciones = opciones;
+        }
+
+        private TorneoRobotsDbContext NuevoContexto()
+        {
+            if (_opciones != null)
+                return new TorneoRobotsDbContext(_opciones);
+
+            return new TorneoRobotsDbContext(_cadenaConexion);
+        }
 
        
         public void Guardar(Robot robot)

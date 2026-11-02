@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using TPRobots;
 
-Console.WriteLine("===== TORNEO DE ROBOTS 2.0 =====");
+Console.WriteLine("===== TORNEO DE ROBOTS 3.0 =====");
 Console.WriteLine();
 
 
@@ -47,26 +47,29 @@ while (!salir)
             DueloMenu(robots, gestorDeDuelos);
             break;
         case 2:
-            EntrenarMenu(robots, repositorio);
+            DueloPorRondasMenu(robots, gestorDeDuelos, repositorio);
             break;
         case 3:
-            DescansarMenu(robots, repositorio);
+            EntrenarMenu(robots, repositorio);
             break;
         case 4:
-            CambiarEstrategiaMenu(robots);
+            DescansarMenu(robots, repositorio);
             break;
         case 5:
-            CrearRobotMenu(robots, repositorio);
+            CambiarEstrategiaMenu(robots);
             break;
         case 6:
-            ranking.MostrarRanking();
+            CrearRobotMenu(robots, repositorio);
             break;
         case 7:
+            ranking.MostrarRanking();
+            break;
+        case 8:
             salir = true;
             Console.WriteLine("Saliendo del simulador. ¡Hasta la próxima!");
             break;
         default:
-            Console.WriteLine("Opción no reconocida. Elegí una del 1 al 7.");
+            Console.WriteLine("Opción no reconocida. Elegí una del 1 al 8.");
             break;
     }
 
@@ -85,12 +88,13 @@ static void MostrarEstado(List<Robot> robots)
 static void MostrarMenu()
 {
     Console.WriteLine("1 - Duelo");
-    Console.WriteLine("2 - Entrenar un robot");
-    Console.WriteLine("3 - Descansar un robot");
-    Console.WriteLine("4 - Cambiar estrategia de combate de un robot");
-    Console.WriteLine("5 - Crear un robot nuevo");
-    Console.WriteLine("6 - Ver ranking de victorias");
-    Console.WriteLine("7 - Salir");
+    Console.WriteLine("2 - Duelo por rondas (al mejor de 3)");
+    Console.WriteLine("3 - Entrenar un robot");
+    Console.WriteLine("4 - Descansar un robot");
+    Console.WriteLine("5 - Cambiar estrategia de combate de un robot");
+    Console.WriteLine("6 - Crear un robot nuevo");
+    Console.WriteLine("7 - Ver ranking de victorias");
+    Console.WriteLine("8 - Salir");
     Console.Write("Elegí una opción: ");
 }
 
@@ -130,6 +134,34 @@ static void DueloMenu(List<Robot> robots, GestorDeDuelos gestor)
     }
 
     gestor.EjecutarDuelo(r1, r2);
+}
+
+static void DueloPorRondasMenu(List<Robot> robots, GestorDeDuelos gestor, RobotRepository? repositorio)
+{
+    if (robots.Count < 2)
+    {
+        Console.WriteLine("Hacen falta al menos dos robots para pelear.");
+        return;
+    }
+
+    Robot? r1 = ElegirRobot(robots, "Elegí el primer robot:");
+    if (r1 == null) return;
+
+    Robot? r2 = ElegirRobot(robots, "Elegí el robot rival:");
+    if (r2 == null || r2 == r1)
+    {
+        Console.WriteLine("Tenés que elegir dos robots distintos.");
+        return;
+    }
+
+    var resultado = gestor.EjecutarDueloPorRondas(r1, r2);
+
+    // Si hubo empate no se avisa a los observadores, pero la energía igual cambió.
+    if (resultado != null && resultado.EsEmpate)
+    {
+        repositorio?.Actualizar(r1);
+        repositorio?.Actualizar(r2);
+    }
 }
 
 static void EntrenarMenu(List<Robot> robots, RobotRepository? repositorio)

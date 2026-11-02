@@ -26,7 +26,7 @@ namespace TPRobots
 
         public string Entrenar(Robot robot)
         {
-            int aumento = new Random().Next(1, 6);
+            int aumento = robot.Generador.Siguiente(1, 6);
             robot.NivelHabilidad += aumento;
             robot.Energia = Math.Max(0, robot.Energia - 10);
             robot.ActualizarEstado();
@@ -35,7 +35,7 @@ namespace TPRobots
 
         public string Descansar(Robot robot)
         {
-            robot.Energia = Math.Min(100, robot.Energia + new Random().Next(10, 26));
+            robot.Energia = Math.Min(100, robot.Energia + robot.Generador.Siguiente(10, 26));
             robot.ActualizarEstado();
             return $"{robot.Nombre} ya estaba activo, igual descansa un poco más.";
         }
@@ -50,7 +50,7 @@ namespace TPRobots
 
         public string Entrenar(Robot robot)
         {
-            int aumento = new Random().Next(1, 3); // rinde menos que Activo
+            int aumento = robot.Generador.Siguiente(1, 3); // rinde menos que Activo
             robot.NivelHabilidad += aumento;
             robot.Energia = Math.Max(0, robot.Energia - 15);
             robot.ActualizarEstado();
@@ -59,7 +59,7 @@ namespace TPRobots
 
         public string Descansar(Robot robot)
         {
-            robot.Energia = Math.Min(100, robot.Energia + new Random().Next(10, 26));
+            robot.Energia = Math.Min(100, robot.Energia + robot.Generador.Siguiente(10, 26));
             robot.ActualizarEstado();
             return $"{robot.Nombre} descansó. Energía actual: {robot.Energia}.";
         }
@@ -79,7 +79,7 @@ namespace TPRobots
 
         public string Descansar(Robot robot)
         {
-            robot.Energia = Math.Min(100, robot.Energia + new Random().Next(10, 26));
+            robot.Energia = Math.Min(100, robot.Energia + robot.Generador.Siguiente(10, 26));
             robot.ActualizarEstado();
             return $"{robot.Nombre} descansó para recuperarse del daño. Energía actual: {robot.Energia}.";
         }
@@ -100,7 +100,7 @@ namespace TPRobots
 
         public string Descansar(Robot robot)
         {
-            robot.Energia = Math.Min(100, robot.Energia + new Random().Next(5, 16));
+            robot.Energia = Math.Min(100, robot.Energia + robot.Generador.Siguiente(5, 16));
             robot.ActualizarEstado();
             return $"{robot.Nombre} recibió una reparación de emergencia. Energía actual: {robot.Energia}.";
         }
